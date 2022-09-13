@@ -18,6 +18,14 @@
         "--allow-all"
       ],
       "attachSimplePort": 9229
+    },
+    {
+      "name": "Launch",
+      "type": "lldb",
+      "request": "launch",
+      "program": "deno",
+      "cwd": "/workspaces/netsaur",
+      "args": ["bench", "-A", "--unstable", "/workspaces/netsaur/test.ts"]
     }
   ]
 }

@@ -11,7 +11,7 @@ const {
 
 const NetworkFinalizer = new FinalizationRegistry(
   (network: Deno.PointerValue) => {
-    network_free(network);
+    // network_free(network);
   },
 );
 

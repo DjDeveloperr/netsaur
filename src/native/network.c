@@ -1,11 +1,15 @@
 #include "network.h"
 #include "stdio.h"
+#include "stdlib.h"
 
 Network* network_new(unsigned int inputSize, Layer** layers, unsigned int numLayers, CostFunction cost) {
   Network* network = malloc(sizeof(Network));
   network->inputSize = inputSize;
   network->numLayers = numLayers;
-  network->layers = layers;
+  network->layers = malloc(sizeof(Layer*) * numLayers);
+  for (int i = 0; i < numLayers; i++) {
+    network->layers[i] = layers[i];
+  }
   network->cost = cost_from_type(cost);
   return network;
 }
@@ -29,9 +33,7 @@ void network_init(Network* network, unsigned int inputSize, unsigned int batches
 Matrix* network_feed_forward(Network* network, Matrix* input) {
   Matrix* output = input;
   for (unsigned int i = 0; i < network->numLayers; i++) {
-    printf("Layer ff %d\n", i);
     output = layer_feed_forward(network->layers[i], output);
-    printf("Layer ff %d done\n", i);
   }
   return output;
 }

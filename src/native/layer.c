@@ -1,6 +1,7 @@
 #include "layer.h"
 #include "stdlib.h"
 #include "stdio.h"
+#include <math.h>
 
 Layer* layer_new(unsigned int outputSize, ActivationFunction activation) {
   Layer* layer = malloc(sizeof(Layer));
@@ -17,9 +18,9 @@ Layer* layer_new(unsigned int outputSize, ActivationFunction activation) {
 }
 
 void layer_reset(Layer* layer, unsigned int batches) {
-  if (layer->output != NULL) {
-    matrix_free(layer->output);
-  }
+  // if (layer->output != NULL) {
+  //   matrix_free(layer->output);
+  // }
   layer->output = matrix_new(layer->outputSize, batches, TYPE_F32);
 }
 
@@ -31,15 +32,15 @@ void layer_init(Layer* layer, unsigned int inputSize, unsigned int batches) {
 
 Matrix* layer_feed_forward(Layer* layer, Matrix* input) {
   layer->input = input;
-  printf("dot %p %p %p\n", input, layer->weights, layer->output);
-  matrix_dot(input, layer->weights, layer->output);
-  printf("dot done\n");
-  printf("add\n");
-  matrix_add(layer->output, layer->biases, layer->output);
-  printf("add done\n");
-  printf("activate\n");
-  layer->activation->activate(layer->output);
-  printf("activate done\n");
+  Matrix* prod = matrix_dot(input, layer->weights, NULL);
+  float* prodData = prod->data;
+  float* biasData = layer->biases->data;
+  float* outputData = layer->output->data;
+  for (int i = 0, j = 0; i < prod->rows * prod->cols; i++, j++) {
+    if (j >= layer->biases->rows) j = 0;
+    float sum = prodData[i] + biasData[j];
+    outputData[i] = 1.0 / (1.0 + exp(-sum));
+  }
   return layer->output;
 }
 

@@ -13,7 +13,7 @@ enum C_ACTIVATION {
 export type Activation = keyof typeof C_ACTIVATION;
 
 const LayerFinalizer = new FinalizationRegistry((layer: Deno.PointerValue) => {
-  layer_free(layer);
+  // layer_free(layer);
 });
 
 export interface LayerConfig {
