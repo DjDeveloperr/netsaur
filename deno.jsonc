@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "test": "deno run -A --unstable test.ts",
+    "build": "gcc -shared -O3 -o libnetsaur.so -fPIC ./src/native/matrix.c ./src/native/activation.c ./src/native/cost.c ./src/native/network.c ./src/native/util.c ./src/native/layer.c"
+  }
+}
