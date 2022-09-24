@@ -1,8 +1,4 @@
-#include "matrix.h"
-#include "stdlib.h"
-#include "time.h"
-#include <string.h>
-#include "util.h"
+#include <include/matrix.h>
 
 Matrix* matrix_new(int rows, int cols, char type) {
   Matrix* m = malloc(sizeof(Matrix));

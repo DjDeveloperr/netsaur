@@ -6,6 +6,8 @@
   "editor.defaultFormatter": "denoland.vscode-deno",
   "editor.formatOnSave": true,
   "files.associations": {
-    "stddef.h": "c"
+    "stddef.h": "c",
+    "stdio.h": "c",
+    "util.h": "c"
   }
 }

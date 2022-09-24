@@ -1,9 +1,10 @@
-import { Layer, Matrix, Network } from "./src/native/mod.ts";
+import { Layer, Network } from "./src/native/mod.ts";
+import ffi from "./src/native/ffi.ts";
 
 const network = new Network({
   inputSize: 2,
   layers: [
-    new Layer({ outputSize: 2, activation: "sigmoid" }),
+    new Layer({ outputSize: 100, activation: "sigmoid" }),
     new Layer({ outputSize: 1, activation: "sigmoid" }),
   ],
   cost: "crossentropy",
@@ -11,13 +12,11 @@ const network = new Network({
 
 network.init(2, 1);
 
-console.log(network);
+console.log(network.predict(new Float32Array([1, 0])));
 
-Deno.bench("noop", () => {});
 Deno.bench(
   "native predict",
-  (): any =>
-    network.predict(
-      new Matrix<"f32">(4, 2, new Float32Array([1, 0, 0, 0, 1, 1, 0, 1, 0, 0])),
-    ),
+  () => {
+    ffi.network_predict(network.unsafePointer, new Float32Array([1, 0]), 2);
+  },
 );

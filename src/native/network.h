@@ -20,4 +20,4 @@ Matrix* network_feed_forward(Network* network, Matrix* input);
 Matrix* network_back_propagate(Network* network, Matrix* yHat, float rate);
 
 void network_train(Network* network, Matrix* xs, Matrix* ys, unsigned int epochs, unsigned int batchSize, float rate);
-Matrix* network_predict(Network* network, Matrix* xs);
+Matrix* network_predict(Network* network, float* xs, unsigned int xslen);

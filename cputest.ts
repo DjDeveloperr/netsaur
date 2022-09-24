@@ -7,11 +7,7 @@ const net = new CPUNetwork({
   },
   hidden: [
     {
-      size: 2,
-      activation: "sigmoid",
-    },
-    {
-      size: 1,
+      size: 100,
       activation: "sigmoid",
     },
   ],
@@ -24,8 +20,11 @@ const net = new CPUNetwork({
 
 net.initialize("f32", 2, 1);
 
-Deno.bench("noop", () => {});
+console.log(net.predict(new Float32Array([1, 0])));
+
 Deno.bench(
   "cpu predict",
-  (): any => net.predict(new Float32Array([1, 0, 0, 0, 1, 1, 0, 1])),
+  () => {
+    net.predict(new Float32Array([1, 0]));
+  },
 );

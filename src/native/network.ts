@@ -11,7 +11,7 @@ const {
 
 const NetworkFinalizer = new FinalizationRegistry(
   (network: Deno.PointerValue) => {
-    // network_free(network);
+    network_free(network);
   },
 );
 
@@ -51,8 +51,8 @@ export class Network {
     network_init(this.#ptr, inputSize, batchSize);
   }
 
-  predict(input: Matrix<"f32">): Matrix<"f32"> {
-    return new Matrix(network_predict(this.#ptr, input.unsafePointer));
+  predict(input: Float32Array): Matrix<"f32"> {
+    return new Matrix(network_predict(this.#ptr, input, input.length));
   }
 
   free(): void {

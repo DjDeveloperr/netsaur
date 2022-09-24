@@ -140,7 +140,7 @@ const symbols = {
   },
 
   network_predict: {
-    parameters: ["pointer", "pointer"],
+    parameters: ["pointer", "buffer", "u32"],
     result: "pointer",
   },
 

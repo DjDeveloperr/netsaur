@@ -1,9 +1,10 @@
 #pragma once
 
 #include "matrix.h"
+#include <math.h>
 
-typedef struct {
-  Matrix* (*cost) (Matrix* yHat, Matrix* y);
+typedef struct CostFx {
+  float (*cost) (float* yHat, float* y, unsigned int len);
   float (*prime) (float yHat, float y);
 } CostFx;
 

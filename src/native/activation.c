@@ -13,45 +13,18 @@ ActivationFx* activation_from_type(ActivationFunction type) {
   }
 }
 
-float sigmoid_f32(float x) {
+float sigmoid(float x) {
   return 1.0 / (1.0 + exp(-x));
 }
 
-Matrix* sigmoid(Matrix* x) {
-  if (x->type != TYPE_F32) return NULL;
-  matrix_map_f32(x, sigmoid_f32);
-  return x;
-}
-
-float sigmoid_prime_f32(float x) {
+float sigmoid_prime(float x) {
   return x * (1.0 - x);
-}
-
-Matrix* sigmoid_prime(Matrix* x) {
-  if (x->type != TYPE_F32) return NULL;
-  Matrix* result = matrix_copy(x);
-  matrix_map_f32(result, sigmoid_prime_f32);
-  return result;
 }
 
 const ActivationFx Sigmoid = { sigmoid, sigmoid_prime };
 
-Matrix* tanh_activate(Matrix* x) {
-  if (x->type != TYPE_F32) return NULL;
-  Matrix* result = matrix_copy(x);
-  matrix_map_f32(result, tanf);
-  return result;
-}
-
-float tanh_prime_f32(float x) {
+float tanh_prime(float x) {
   return 1.0 - x * x;
 }
 
-Matrix* tanh_prime(Matrix* x) {
-  if (x->type != TYPE_F32) return NULL;
-  Matrix* result = matrix_copy(x);
-  matrix_map_f32(result, tanh_prime_f32);
-  return result;
-}
-
-const ActivationFx Tanh = { tanh_activate, tanh_prime };
+const ActivationFx Tanh = { tanf, tanh_prime };

@@ -1,6 +1,10 @@
 #pragma once
 
-#include "stdint.h"
+#include <stdint.h>
+#include <include/util.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
 
 #define TYPE_U32 0
 #define TYPE_I32 1

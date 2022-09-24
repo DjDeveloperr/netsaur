@@ -1,6 +1,8 @@
 {
   "tasks": {
-    "test": "deno run -A --unstable test.ts",
-    "build": "gcc -shared -O3 -o libnetsaur.so -fPIC ./src/native/matrix.c ./src/native/activation.c ./src/native/cost.c ./src/native/network.c ./src/native/util.c ./src/native/layer.c"
+    // "test": "deno run -A --unstable test.ts",
+    // "build": "gcc -shared -o libnetsaur.so -Ofast -march=native -ffast-math -fopenmp -fPIC ./src/native/matrix.c ./src/native/activation.c ./src/native/cost.c ./src/native/network.c ./src/native/util.c ./src/native/layer.c"
+    "build": "cd native/build && cmake .. && make",
+    "test": "./native/build/netsaur_test"
   }
 }

@@ -56,7 +56,7 @@ const {
 } = (Deno as any).core.ops;
 
 const MatrixFinalizer = new FinalizationRegistry((id: Deno.PointerValue) => {
-  // matrix_free(id);
+  matrix_free(id);
 });
 
 export class Matrix<T extends DataType> {

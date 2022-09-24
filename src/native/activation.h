@@ -2,9 +2,9 @@
 
 #include "matrix.h"
 
-typedef struct {
-  Matrix* (*activate) (Matrix* x);
-  Matrix* (*prime) (Matrix* x);
+typedef struct ActionvationFx {
+  float (*activate) (float x);
+  float (*prime) (float x);
 } ActivationFx;
 
 typedef unsigned char ActivationFunction;

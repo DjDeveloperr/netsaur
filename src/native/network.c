@@ -15,9 +15,10 @@ Network* network_new(unsigned int inputSize, Layer** layers, unsigned int numLay
 }
 
 void network_free(Network* network) {
-  for (unsigned int i = 0; i < network->numLayers; i++) {
-    layer_free(network->layers[i]);
-  }
+  // Not owned by Network
+  // for (unsigned int i = 0; i < network->numLayers; i++) {
+  //   layer_free(network->layers[i]);
+  // }
   free(network->layers);
   free(network);
 }
@@ -31,16 +32,19 @@ void network_init(Network* network, unsigned int inputSize, unsigned int batches
 }
 
 Matrix* network_feed_forward(Network* network, Matrix* input) {
-  Matrix* output = input;
   for (unsigned int i = 0; i < network->numLayers; i++) {
-    output = layer_feed_forward(network->layers[i], output);
+    input = layer_feed_forward(network->layers[i], input);
   }
-  return output;
+  return input;
 }
 
-Matrix* network_predict(Network* network, Matrix* xs) {
+Matrix* network_predict(Network* network, float* xs, unsigned int xslen) {
   for (int i = 0; i < network->numLayers; i++) {
     layer_reset(network->layers[i], 1);
   }
-  return network_feed_forward(network, xs);
+  Matrix* input = matrix_new_from_array_zero_copy(1, xslen, TYPE_F32, xs);
+  Matrix* result = network_feed_forward(network, input);
+  input->data = NULL;
+  matrix_free(input);
+  return result;
 }
