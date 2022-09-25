@@ -1,1 +1,0 @@
-float gauss_rand();

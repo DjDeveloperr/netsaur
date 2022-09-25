@@ -114,12 +114,17 @@ const symbols = {
     result: "pointer",
   },
 
+  matrix_print: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+
   matrix_free: {
     parameters: ["pointer"],
     result: "void",
   },
 
-  layer_new: {
+  layer_dense: {
     parameters: ["u32", "u8"],
     result: "pointer",
   },
@@ -129,19 +134,19 @@ const symbols = {
     result: "void",
   },
 
-  network_new: {
-    parameters: ["u32", "buffer", "u32", "u8"],
+  network_create: {
+    parameters: ["u32", "u8", "u32", "buffer"],
     result: "pointer",
   },
 
-  network_init: {
-    parameters: ["pointer", "u32", "u32"],
+  network_feed_forward: {
+    parameters: ["pointer", "pointer"],
+    result: "pointer",
+  },
+
+  network_train: {
+    parameters: ["pointer", "u32", "buffer", "u32", "f32"],
     result: "void",
-  },
-
-  network_predict: {
-    parameters: ["pointer", "buffer", "u32"],
-    result: "pointer",
   },
 
   network_free: {
@@ -150,5 +155,8 @@ const symbols = {
   },
 } as const;
 
-export default Deno.dlopen("/workspaces/netsaur/libnetsaur.so", symbols)
+export default Deno.dlopen(
+  "/workspaces/netsaur/native/build/libnetsaur.so",
+  symbols,
+)
   .symbols;

@@ -13,17 +13,14 @@ void xor() {
     }
   );
 
-  network_init(network);
-
   Dataset* dataset = malloc(sizeof(Dataset));
-  dataset->batches = 4;
-  dataset->inputs = matrix_new_from_array(dataset->batches, 2, TYPE_F32, (void*) ((float[]) {
+  dataset->inputs = matrix_new_from_array(4, 2, TYPE_F32, (void*) ((float[]) {
     0.0f, 0.0f,
     0.0f, 1.0f,
     1.0f, 0.0f,
     1.0f, 1.0f
   }));
-  dataset->outputs = matrix_new_from_array(dataset->batches, 1, TYPE_F32, (void*) ((float[]) {
+  dataset->outputs = matrix_new_from_array(4, 1, TYPE_F32, (void*) ((float[]) {
     0.0f,
     1.0f,
     1.0f,
@@ -63,17 +60,14 @@ void linear_regression() {
     }
   );
 
-  network_init(network);
-
   Dataset* dataset = malloc(sizeof(Dataset));
-  dataset->batches = 4;
-  dataset->inputs = matrix_new_from_array(dataset->batches, 1, TYPE_F32, (void*) ((float[]) {
+  dataset->inputs = matrix_new_from_array(4, 1, TYPE_F32, (void*) ((float[]) {
     1.0f,
     2.0f,
     3.0f,
     4.0f
   }));
-  dataset->outputs = matrix_new_from_array(dataset->batches, 1, TYPE_F32, (void*) ((float[]) {
+  dataset->outputs = matrix_new_from_array(4, 1, TYPE_F32, (void*) ((float[]) {
     1.0f,
     3.0f,
     5.0f,

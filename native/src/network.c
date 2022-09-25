@@ -7,10 +7,17 @@ Network* network_create(
   Layer** layers
 ) {
   Network* network = malloc(sizeof(Network));
+
   network->input_size = input_size;
   network->cost = get_cost(cost_type);
   network->num_layers = num_layers;
   network->layers = layers;
+
+  for (unsigned int i = 0; i < network->num_layers; i++) {
+    network->layers[i]->init(network->layers[i], input_size);
+    input_size = network->layers[i]->output_size;
+  }
+
   return network;
 }
 
@@ -21,14 +28,6 @@ void* network_free(Network* network) {
   // TODO: why is this invalid
   // free(network->layers);
   free(network);
-}
-
-void network_init(Network* network) {
-  unsigned int input_size = network->input_size;
-  for (unsigned int i = 0; i < network->num_layers; i++) {
-    network->layers[i]->init(network->layers[i], input_size);
-    input_size = network->layers[i]->output_size;
-  }
 }
 
 Matrix* network_feed_forward(Network* network, Matrix* input) {
@@ -69,7 +68,7 @@ void network_train(Network* network, unsigned int num_datasets, Dataset** datase
     for (unsigned int j = 0; j < num_datasets; j++) {
       Dataset* dataset = datasets[j];
       for (unsigned int i = 0; i < network->num_layers; i++) {
-        network->layers[i]->reset(network->layers[i], dataset->batches);
+        network->layers[i]->reset(network->layers[i], dataset->inputs->rows);
       }
       network_feed_forward(network, dataset->inputs);
       network_back_prop(network, dataset->outputs, learning_rate);

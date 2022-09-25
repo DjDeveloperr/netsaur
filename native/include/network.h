@@ -19,14 +19,11 @@ Network* network_create(
 
 void* network_free(Network* network);
 
-void network_init(Network* network);
-
 Matrix* network_feed_forward(Network* network, Matrix* input);
 
 void network_back_prop(Network* network, Matrix* target, float learning_rate);
 
 typedef struct Dataset {
-  unsigned int batches;
   Matrix* inputs;
   Matrix* outputs;
 } Dataset;

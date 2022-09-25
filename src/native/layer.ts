@@ -2,7 +2,7 @@ import ffi from "./ffi.ts";
 
 const {
   layer_free,
-  layer_new,
+  layer_dense,
 } = ffi;
 
 enum C_ACTIVATION {
@@ -30,7 +30,7 @@ export class Layer {
   }
 
   constructor(config: LayerConfig) {
-    this.#ptr = layer_new(config.outputSize, C_ACTIVATION[config.activation]);
+    this.#ptr = layer_dense(config.outputSize, C_ACTIVATION[config.activation]);
     this.#token.ptr = this.#ptr;
     LayerFinalizer.register(this, this.#ptr, this.#token);
   }

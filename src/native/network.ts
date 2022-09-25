@@ -4,9 +4,9 @@ import { Matrix } from "./matrix.ts";
 
 const {
   network_free,
-  network_new,
-  network_predict,
-  network_init,
+  network_create,
+  network_feed_forward,
+  network_train,
 } = ffi;
 
 const NetworkFinalizer = new FinalizationRegistry(
@@ -28,6 +28,11 @@ export interface NetworkConfig {
   cost: Cost;
 }
 
+export interface Dataset {
+  inputs: Matrix<"f32">;
+  outputs: Matrix<"f32">;
+}
+
 export class Network {
   #ptr: Deno.PointerValue;
   #token: { ptr: Deno.PointerValue } = { ptr: 0 };
@@ -37,22 +42,36 @@ export class Network {
   }
 
   constructor(config: NetworkConfig) {
-    this.#ptr = network_new(
+    this.#ptr = network_create(
       config.inputSize,
-      new BigUint64Array(config.layers.map((e) => BigInt(e.unsafePointer))),
-      config.layers.length,
       C_COST[config.cost],
+      config.layers.length,
+      new BigUint64Array(config.layers.map((e) => BigInt(e.unsafePointer))),
     );
     this.#token.ptr = this.#ptr;
     NetworkFinalizer.register(this, this.#ptr, this.#token);
   }
 
-  init(inputSize: number, batchSize: number): void {
-    network_init(this.#ptr, inputSize, batchSize);
+  predict(input: Matrix<"f32">): Matrix<"f32"> {
+    return new Matrix(network_feed_forward(this.#ptr, input.unsafePointer));
   }
 
-  predict(input: Float32Array): Matrix<"f32"> {
-    return new Matrix(network_predict(this.#ptr, input, input.length));
+  train(datasets: Dataset[], epochs: number, learningRate: number) {
+    const datasetBuffers = datasets.map((e) =>
+      new BigUint64Array(
+        [e.inputs.unsafePointer, e.outputs.unsafePointer].map(BigInt),
+      )
+    );
+    const datasetBufferPointers = new BigUint64Array(
+      datasetBuffers.map((e) => BigInt(Deno.UnsafePointer.of(e))),
+    );
+    network_train(
+      this.unsafePointer,
+      datasets.length,
+      datasetBufferPointers,
+      epochs,
+      learningRate,
+    );
   }
 
   free(): void {
