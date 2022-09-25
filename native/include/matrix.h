@@ -18,6 +18,7 @@ typedef struct Matrix {
   unsigned int rows;
   unsigned int cols;
   MatrixType type;
+  unsigned char returned_to_js;
 } Matrix;
 
 Matrix* matrix_new(int rows, int cols, MatrixType type);

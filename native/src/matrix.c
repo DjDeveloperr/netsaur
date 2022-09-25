@@ -5,6 +5,7 @@ Matrix* matrix_new(int rows, int cols, MatrixType type) {
   m->rows = rows;
   m->cols = cols;
   m->type = type;
+  m->returned_to_js = 0;
   switch (type) {
     case TYPE_U32:
     case TYPE_I32:
@@ -25,6 +26,7 @@ Matrix* matrix_new_randf(int rows, int cols) {
   m->rows = rows;
   m->cols = cols;
   m->type = TYPE_F32;
+  m->returned_to_js = 0;
   float* data = malloc(4 * rows * cols);
   for (int i = 0; i < rows * cols; i++) {
     data[i] = gauss_rand();
@@ -57,6 +59,7 @@ Matrix* matrix_new_from_array_zero_copy(int rows, int cols, MatrixType type, voi
   m->cols = cols;
   m->type = type;
   m->data = data;
+  m->returned_to_js = 0;
   return m;
 }
 

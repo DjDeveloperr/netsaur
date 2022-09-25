@@ -7,7 +7,7 @@ void layer_dense_init(Layer* layer, unsigned int input_size) {
 }
 
 void layer_dense_reset(Layer* layer, unsigned int batches) {
-  if (layer->output != NULL) matrix_free(layer->output);
+  if (layer->output != NULL && layer->output->returned_to_js != 1) matrix_free(layer->output);
   layer->output = matrix_new(batches, layer->output_size, TYPE_F32);
 }
 
