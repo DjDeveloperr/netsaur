@@ -42,7 +42,7 @@ export class CPUNetwork<T extends DataType = DataType> implements Network {
   }
 
   initialize(type: DataType, inputSize: number, batches: number) {
-    this.hidden[0].initialize(type, inputSize, batches);
+    this.hidden[0]?.initialize(type, inputSize, batches);
 
     for (let i = 1; i < this.hidden.length; i++) {
       const current = this.hidden[i];
@@ -51,7 +51,11 @@ export class CPUNetwork<T extends DataType = DataType> implements Network {
     }
 
     const lastLayer = this.hidden[this.hidden.length - 1];
-    this.output.initialize(type, lastLayer.outputSize, batches);
+    this.output.initialize(
+      type,
+      lastLayer?.outputSize ?? this.input?.size,
+      batches,
+    );
   }
 
   feedForward(input: CPUMatrix<T>): CPUMatrix<T> {

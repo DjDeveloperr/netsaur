@@ -143,7 +143,10 @@ Matrix* matrix_map_u32(Matrix* m, uint32_t (*f) (uint32_t)) {
 
 Matrix* matrix_dot(Matrix* a, Matrix* b, Matrix* result) {
   if (a->type != b->type) return NULL;
-  if (a->cols != b->rows) return NULL;
+  if (a->cols != b->rows) {
+    printf("Matrix dimensions do not match for dot product\n");
+    return NULL;
+  }
   
   if (result == NULL) result = matrix_new(a->rows, b->cols, a->type);
   else {
@@ -535,7 +538,34 @@ Matrix* matrix_transpose(Matrix* m) {
   return result;
 }
 
+void matrix_print(Matrix* m, char* name) {
+  printf("%s = [\n", name);
+  for (int i = 0; i < m->rows; i++) {
+    printf("  ");
+    for (int j = 0; j < m->cols; j++) {
+      switch (m->type) {
+        case TYPE_U32:
+          printf("%u", ((uint32_t*)m->data)[i * m->cols + j]);
+          break;
+        case TYPE_I32:
+          printf("%d", ((int32_t*)m->data)[i * m->cols + j]);
+          break;
+        case TYPE_F32:
+          printf("%f", ((float*)m->data)[i * m->cols + j]);
+          break;
+        default:
+          printf("?");
+          break;
+      }
+      if (j < m->cols - 1) printf(", ");
+    }
+    printf("\n");
+  }
+  printf("]\n");
+}
+
 void matrix_free(Matrix* m) {
+  CHECK_NULL(m);
   if (m->data != NULL) free(m->data);
   free(m);
 }

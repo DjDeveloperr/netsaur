@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include <stdint.h>
 #include <include/util.h>
 #include <stdlib.h>
@@ -10,7 +11,7 @@
 #define TYPE_I32 1
 #define TYPE_F32 2
 
-typedef struct {
+typedef struct Matrix {
   void* data;
   unsigned int rows;
   unsigned int cols;
@@ -53,5 +54,7 @@ Matrix* matrix_mul_i32(Matrix* a, int32_t b);
 Matrix* matrix_div_i32(Matrix* a, int32_t b);
 
 Matrix* matrix_transpose(Matrix* m);
+
+void matrix_print(Matrix* m, char* name);
 
 void matrix_free(Matrix* m);

@@ -9,5 +9,6 @@
     "stddef.h": "c",
     "stdio.h": "c",
     "util.h": "c"
-  }
+  },
+  "cmake.sourceDirectory": "${workspaceFolder}/native"
 }

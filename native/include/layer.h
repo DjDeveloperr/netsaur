@@ -11,12 +11,13 @@ typedef struct Layer {
 
   Matrix* weights;
   Matrix* biases;
+  Matrix* input;
   Matrix* output;
 
-  void (*init) (struct Layer* layer, unsigned int input_size, unsigned int batches);
+  void (*init) (struct Layer* layer, unsigned int input_size);
   void (*reset) (struct Layer* layer, unsigned int batches);
   Matrix* (*feed_forward) (struct Layer* layer, Matrix* input);
-  void (*back_prop) (struct Layer* layer, Matrix* input, Matrix* error, float learning_rate);
+  void (*back_prop) (struct Layer* layer, Matrix* error, float learning_rate);
   
   // Generic layer data
   void* data;
