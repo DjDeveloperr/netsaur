@@ -7,6 +7,7 @@ typedef struct Network {
   unsigned int input_size;
   unsigned int num_layers;
   Layer** layers;
+  CostType cost_type;
   const Cost* cost;
 } Network;
 
@@ -29,3 +30,7 @@ typedef struct Dataset {
 } Dataset;
 
 void network_train(Network* network, unsigned int num_datasets, Dataset** datasets, unsigned int epochs, float learning_rate);
+
+void network_save(Network* network, const char* filename);
+
+Network* network_load(const char* filename);

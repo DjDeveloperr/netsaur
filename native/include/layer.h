@@ -3,10 +3,17 @@
 #include <include/matrix.h>
 #include <include/activation.h>
 
+typedef unsigned char LayerType;
+
+#define LAYER_DENSE 0
+
 typedef struct Layer {
+  LayerType type;
+
   unsigned int input_size;
   unsigned int output_size;
 
+  ActivationType activation_type;
   const Activation* activation;
 
   Matrix* weights;
@@ -27,3 +34,8 @@ typedef struct Layer {
 void layer_free(Layer* layer);
 
 Layer* layer_dense(unsigned int size, ActivationType activation_type);
+void layer_dense_serialize(Layer* layer, FILE* file);
+Layer* layer_dense_deserialize(FILE* file);
+
+void layer_serialize(Layer* layer, FILE* file);
+Layer* layer_deserialize(FILE* file);

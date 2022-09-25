@@ -20,7 +20,7 @@ add_library(netsaur SHARED ${SOURCES})
 target_link_libraries(netsaur m)
 target_link_libraries(netsaur_test m)
 
-set (COMPILE_OPTIONS -Ofast)
+set (COMPILE_OPTIONS -Ofast -Wno-unused-result)
 
 target_compile_options(netsaur PRIVATE ${COMPILE_OPTIONS})
 target_compile_options(netsaur_test PRIVATE ${COMPILE_OPTIONS})

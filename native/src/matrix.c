@@ -1,6 +1,6 @@
 #include <include/matrix.h>
 
-Matrix* matrix_new(int rows, int cols, char type) {
+Matrix* matrix_new(int rows, int cols, MatrixType type) {
   Matrix* m = malloc(sizeof(Matrix));
   m->rows = rows;
   m->cols = cols;
@@ -33,7 +33,7 @@ Matrix* matrix_new_randf(int rows, int cols) {
   return m;
 }
 
-Matrix* matrix_new_from_array(int rows, int cols, char type, void* data) {
+Matrix* matrix_new_from_array(int rows, int cols, MatrixType type, void* data) {
   Matrix* m = matrix_new(rows, cols, type);
   if (m == NULL) {
     return NULL;
@@ -51,7 +51,7 @@ Matrix* matrix_new_from_array(int rows, int cols, char type, void* data) {
   return m;
 }
 
-Matrix* matrix_new_from_array_zero_copy(int rows, int cols, char type, void* data) {
+Matrix* matrix_new_from_array_zero_copy(int rows, int cols, MatrixType type, void* data) {
   Matrix* m = malloc(sizeof(Matrix));
   m->rows = rows;
   m->cols = cols;
@@ -562,6 +562,24 @@ void matrix_print(Matrix* m, char* name) {
     printf("\n");
   }
   printf("]\n");
+}
+
+void matrix_serialize(Matrix* m, FILE* f) {
+  fwrite(&m->type, sizeof(MatrixType), 1, f);
+  fwrite(&m->rows, sizeof(uint32_t), 1, f);
+  fwrite(&m->cols, sizeof(uint32_t), 1, f);
+  fwrite(m->data, 4, m->rows * m->cols, f);
+}
+
+Matrix* matrix_deserialize(FILE* f) {
+  MatrixType type;
+  uint32_t rows, cols;
+  fread(&type, sizeof(MatrixType), 1, f);
+  fread(&rows, sizeof(uint32_t), 1, f);
+  fread(&cols, sizeof(uint32_t), 1, f);
+  Matrix* m = matrix_new(rows, cols, type);
+  fread(m->data, 4, rows * cols, f);
+  return m;
 }
 
 void matrix_free(Matrix* m) {

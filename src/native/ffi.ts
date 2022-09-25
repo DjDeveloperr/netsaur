@@ -153,6 +153,16 @@ const symbols = {
     parameters: ["pointer"],
     result: "void",
   },
+
+  network_save: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  },
+
+  network_load: {
+    parameters: ["buffer"],
+    result: "pointer",
+  },
 } as const;
 
 export default Deno.dlopen(
@@ -160,3 +170,7 @@ export default Deno.dlopen(
   symbols,
 )
   .symbols;
+
+export function cstr(str: string) {
+  return new TextEncoder().encode(str + "\0");
+}

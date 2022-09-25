@@ -1,4 +1,4 @@
-import ffi from "./ffi.ts";
+import ffi, { cstr } from "./ffi.ts";
 import { Layer } from "./layer.ts";
 import { Matrix } from "./matrix.ts";
 
@@ -7,6 +7,8 @@ const {
   network_create,
   network_feed_forward,
   network_train,
+  network_load,
+  network_save,
 } = ffi;
 
 const NetworkFinalizer = new FinalizationRegistry(
@@ -41,13 +43,15 @@ export class Network {
     return this.#ptr;
   }
 
-  constructor(config: NetworkConfig) {
-    this.#ptr = network_create(
-      config.inputSize,
-      C_COST[config.cost],
-      config.layers.length,
-      new BigUint64Array(config.layers.map((e) => BigInt(e.unsafePointer))),
-    );
+  constructor(config: NetworkConfig | Deno.PointerValue) {
+    this.#ptr = typeof config === "object"
+      ? network_create(
+        config.inputSize,
+        C_COST[config.cost],
+        config.layers.length,
+        new BigUint64Array(config.layers.map((e) => BigInt(e.unsafePointer))),
+      )
+      : config;
     this.#token.ptr = this.#ptr;
     NetworkFinalizer.register(this, this.#ptr, this.#token);
   }
@@ -72,6 +76,14 @@ export class Network {
       epochs,
       learningRate,
     );
+  }
+
+  static load(path: string): Network {
+    return new Network(network_load(cstr(path)));
+  }
+
+  save(path: string) {
+    network_save(this.#ptr, cstr(path));
   }
 
   free(): void {

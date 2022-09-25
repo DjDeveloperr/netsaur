@@ -24,8 +24,8 @@
       "type": "lldb",
       "request": "launch",
       "program": "deno",
-      "cwd": "/workspaces/netsaur",
-      "args": ["bench", "-A", "--unstable", "/workspaces/netsaur/test.ts"]
+      "cwd": "/workspaces/netsaur/digit",
+      "args": ["run", "-A", "--unstable", "/workspaces/netsaur/digit/model.ts"]
     }
   ]
 }

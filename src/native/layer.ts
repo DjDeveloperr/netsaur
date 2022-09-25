@@ -13,12 +13,12 @@ enum C_ACTIVATION {
 export type Activation = keyof typeof C_ACTIVATION;
 
 const LayerFinalizer = new FinalizationRegistry((layer: Deno.PointerValue) => {
-  layer_free(layer);
+  // layer_free(layer);
 });
 
-export interface LayerConfig {
+export interface DenseLayerConfig {
   activation: Activation;
-  outputSize: number;
+  units: number;
 }
 
 export class Layer {
@@ -29,10 +29,16 @@ export class Layer {
     return this.#ptr;
   }
 
-  constructor(config: LayerConfig) {
-    this.#ptr = layer_dense(config.outputSize, C_ACTIVATION[config.activation]);
-    this.#token.ptr = this.#ptr;
+  constructor(ptr: Deno.PointerValue) {
+    this.#ptr = ptr;
+    this.#token.ptr = ptr;
     LayerFinalizer.register(this, this.#ptr, this.#token);
+  }
+
+  static dense(config: DenseLayerConfig): Layer {
+    return new Layer(
+      layer_dense(config.units, C_ACTIVATION[config.activation]),
+    );
   }
 
   free(): void {

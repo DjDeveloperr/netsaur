@@ -9,9 +9,11 @@ Network* network_create(
   Network* network = malloc(sizeof(Network));
 
   network->input_size = input_size;
+  network->cost_type = cost_type;
   network->cost = get_cost(cost_type);
   network->num_layers = num_layers;
-  network->layers = layers;
+  network->layers = malloc(sizeof(Layer*) * num_layers);
+  memcpy(network->layers, layers, sizeof(Layer*) * num_layers);
 
   for (unsigned int i = 0; i < network->num_layers; i++) {
     network->layers[i]->init(network->layers[i], input_size);
@@ -57,10 +59,15 @@ void network_back_prop(Network* network, Matrix* target, float learning_rate) {
   Matrix* weights = output_layer->weights;
   for (int i = network->num_layers - 2; i >= 0; i--) {
     Layer* layer = network->layers[i];
-    error = matrix_dot(error, matrix_transpose(weights), NULL);
+    Matrix* error_old = error;
+    Matrix* weights_transpose = matrix_transpose(weights);
+    error = matrix_dot(error, weights_transpose, NULL);
+    matrix_free(error_old);
+    matrix_free(weights_transpose);
     layer->back_prop(layer, error, learning_rate);
     weights = layer->weights;
   }
+  matrix_free(error);
 }
 
 void network_train(Network* network, unsigned int num_datasets, Dataset** datasets, unsigned int epochs, float learning_rate) {
@@ -74,4 +81,38 @@ void network_train(Network* network, unsigned int num_datasets, Dataset** datase
       network_back_prop(network, dataset->outputs, learning_rate);
     }
   }
+}
+
+void network_save(Network* network, const char* filename) {
+  FILE* file = fopen(filename, "w");
+  fwrite(&network->input_size, sizeof(unsigned int), 1, file);
+  fwrite(&network->num_layers, sizeof(unsigned int), 1, file);
+  fwrite(&network->cost_type, sizeof(CostType), 1, file);
+  for (unsigned int i = 0; i < network->num_layers; i++) {
+    Layer* layer = network->layers[i];
+    layer_serialize(layer, file);
+  }
+  fclose(file);
+}
+
+Network* network_load(const char* filename) {
+  FILE* file = fopen(filename, "r");
+  unsigned int input_size;
+  unsigned int num_layers;
+  CostType cost_type;
+  fread(&input_size, sizeof(unsigned int), 1, file);
+  fread(&num_layers, sizeof(unsigned int), 1, file);
+  fread(&cost_type, sizeof(CostType), 1, file);
+  Layer** layers = malloc(sizeof(Layer*) * num_layers);
+  for (unsigned int i = 0; i < num_layers; i++) {
+    layers[i] = layer_deserialize(file);
+  }
+  Network* net = malloc(sizeof(Network));
+  net->input_size = input_size;
+  net->num_layers = num_layers;
+  net->cost_type = cost_type;
+  net->cost = get_cost(cost_type);
+  net->layers = layers;
+  fclose(file);
+  return net;
 }

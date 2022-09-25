@@ -147,6 +147,20 @@ export class Matrix<T extends DataType> {
     return new Matrix(matrix_new_randf(rows, cols));
   }
 
+  static of(data: number[][]): Matrix<"f32"> {
+    const rows = data.length;
+    const cols = data[0].length;
+    return new Matrix(rows, cols, new Float32Array(data.flat()));
+  }
+
+  static row(data: number[]): Matrix<"f32"> {
+    return new Matrix(1, data.length, new Float32Array(data));
+  }
+
+  static column(data: number[]): Matrix<"f32"> {
+    return new Matrix(data.length, 1, new Float32Array(data));
+  }
+
   dot(b: Matrix<T>): Matrix<T> {
     const c = matrix_dot(this.#ptr, b.unsafePointer);
     if (c === 0) throw new Error("Invalid matrix dimensions");

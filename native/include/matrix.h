@@ -7,22 +7,24 @@
 #include <time.h>
 #include <string.h>
 
-#define TYPE_U32 0
-#define TYPE_I32 1
-#define TYPE_F32 2
+typedef unsigned char MatrixType;
+
+#define TYPE_U32 (MatrixType) 0
+#define TYPE_I32 (MatrixType) 1
+#define TYPE_F32 (MatrixType) 2
 
 typedef struct Matrix {
   void* data;
   unsigned int rows;
   unsigned int cols;
-  unsigned char type;
+  MatrixType type;
 } Matrix;
 
-Matrix* matrix_new(int rows, int cols, char type);
+Matrix* matrix_new(int rows, int cols, MatrixType type);
 Matrix* matrix_new_randf(int rows, int cols);
 
-Matrix* matrix_new_from_array(int rows, int cols, char type, void* data);
-Matrix* matrix_new_from_array_zero_copy(int rows, int cols, char type, void* data);
+Matrix* matrix_new_from_array(int rows, int cols, MatrixType type, void* data);
+Matrix* matrix_new_from_array_zero_copy(int rows, int cols, MatrixType type, void* data);
 
 Matrix* matrix_new_fill_u32(int rows, int cols, uint32_t v);
 Matrix* matrix_new_fill_i32(int rows, int cols, int32_t v);
@@ -56,5 +58,7 @@ Matrix* matrix_div_i32(Matrix* a, int32_t b);
 Matrix* matrix_transpose(Matrix* m);
 
 void matrix_print(Matrix* m, char* name);
+void matrix_serialize(Matrix* m, FILE* f);
+Matrix* matrix_deserialize(FILE* f);
 
 void matrix_free(Matrix* m);
